@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>丹丹专属无敌捕鱼游戏</title>
+    <style>
+        html, body {
+            background-color: black;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        #c1 {
+            background: url("img/game_bg_2_hd.jpg");
+            transform: scale(1);
+        }
+        .cb {
+            position: relative;
+            display: inline-block;
+        }
+        html {
+            height: 100%;
+        }
+
+        body {
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background: rgba(206,188,155,1);
+            background: -moz-linear-gradient(-45deg, rgba(206,188,155,1) 0%, rgba(85,63,50,1) 51%, rgba(42,31,25,1) 100%);
+            background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(206,188,155,1)), color-stop(51%, rgba(85,63,50,1)), color-stop(100%, rgba(42,31,25,1)));
+            background: -webkit-linear-gradient(-45deg, rgba(206,188,155,1) 0%, rgba(85,63,50,1) 51%, rgba(42,31,25,1) 100%);
+            background: -o-linear-gradient(-45deg, rgba(206,188,155,1) 0%, rgba(85,63,50,1) 51%, rgba(42,31,25,1) 100%);
+            background: -ms-linear-gradient(-45deg, rgba(206,188,155,1) 0%, rgba(85,63,50,1) 51%, rgba(42,31,25,1) 100%);
+            background: linear-gradient(135deg, rgba(206,188,155,1) 0%, rgba(85,63,50,1) 51%, rgba(42,31,25,1) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cebc9b', endColorstr='#2a1f19', GradientType=1 );
+        }
+
+        h1 {
+            width: 100%;
+            margin: 0 auto 0 auto;
+            font-family: 'Lato', sans-serif;
+            font-size: 2rem;
+            padding: 10px 0;
+            text-align: center;
+            text-transform: uppercase;
+            text-rendering: optimizeLegibility;
+        }
+
+        /*
+        ============
+            Light
+        ============
+        */
+        h1::before {
+            content:"";
+            width: 100%;
+            height: 750px;
+            position: absolute;
+            top: -200px;
+            left: 10px;
+            transform: rotate(55deg);
+            background: rgba(206,188,155,.7);
+            background: -moz-linear-gradient(left, rgba(206,188,155,.7) 0%, rgba(42,31,25,0) 65%);
+            background: -webkit-gradient(left top, right top, color-stop(0%, rgba(206,188,155,.7)), color-stop(65%, rgba(42,31,25,0)));
+            background: -webkit-linear-gradient(left, rgba(206,188,155,.7) 0%, rgba(42,31,25,0) 65%);
+            background: -o-linear-gradient(left, rgba(206,188,155,.7) 0%, rgba(42,31,25,0) 65%);
+            background: -ms-linear-gradient(left, rgba(206,188,155,.7) 0%, rgba(42,31,25,0) 65%);
+            background: linear-gradient(to right, rgba(206,188,155,.7) 0%, rgba(42,31,25,0) 65%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cebc9b', endColorstr='#2a1f19', GradientType=0.7 ); );
+        }
+
+
+
+        /*
+        ========================
+                    3D Effect
+        ========================
+        */
+        #text3d {
+            color: #70869d;
+            letter-spacing: .15em;
+            text-shadow:
+                    -1px -1px 1px #efede3,
+                    0px 1px 0 #2e2e2e,
+                    0px 2px 0 #2c2c2c,
+                    0px 3px 0 #2a2a2a,
+                    0px 4px 0 #282828,
+                    0px 5px 0 #262626,
+                    0px 6px 0 #242424,
+                    0px 7px 0 #222,
+                    0px 8px 0 #202020,
+                    0px 9px 0 #1e1e1e,
+                    0px 10px 0 #1c1c1c,
+                    0px 11px 0 #1a1a1a,
+                    0px 12px 0 #181818,
+                    0px 13px 0 #161616,
+                    0px 14px 0 #141414,
+                    0px 15px 0 #121212,
+                    2px 20px 5px rgba(0, 0, 0, 0.9),
+                    5px 23px 5px rgba(0, 0, 0, 0.3),
+                    8px 27px 8px rgba(0, 0, 0, 0.5),
+                    8px 28px 35px rgba(0, 0, 0, 0.9);
+        }
+
+    </style>
+    <script src="js/jq.js"></script>
+    <script src="js/resources.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/Spirit.js"></script>
+    <script src="js/Fish.js"></script>
+    <script src="js/Cannon.js"></script>
+    <script src="js/Bullet.js"></script>
+    <script src="js/Button.js"></script>
+    <script src="js/Coin.js"></script>
+    <script>
+      // const $=document.querySelectorAll.bind(document)
+      window.onload = async function () {
+        //加载相关素材json
+        let oC = $("#c1")[0];
+        let W = oC.width, H = oC.height;
+        let gd = oC.getContext('2d');
+        let imgs;
+        const coinCollector = {x: -106, y: -576};
+
+        try {
+          imgs = await loadResources();
+
+        } catch (e) {
+          alert('加载失败，请刷新重试')
+        }
+        let bar = __g_resource['bottom'].bottom_bar;
+        let bottom_bar = new Spirit({
+          img: bar.img,
+          w: bar.frame.w,
+          h: bar.frame.h,
+          sx: bar.frame.x,
+          sy: bar.frame.y,
+          x: 400,
+          y: 566
+        });
+
+        //鱼
+        /*let fish = new Fish(5);
+        fish.x = 200;
+        fish.y = 200;*/
+        //炮
+        let cannon = new Cannon(7);
+        cannon.x = 442;
+        cannon.y = 562;
+
+        //鼠标滑过
+        oC.onmousemove = function (ev) {
+          let x = ev.offsetX - cannon.x;
+          let y = ev.offsetY - cannon.y;
+          cannon.rotation = Math.atan2(y, x) * 180 / Math.PI + 90;
+
+
+          let bullet = new Bullet(cannon.type);
+          bullet.x = cannon.x;
+          bullet.y = cannon.y;
+          bullet.rotation = cannon.rotation;
+          bullets.push(bullet);
+
+
+        };
+        oC.ontouchmove = function (ev) {
+          console.log('aa');
+          let x = ev.offsetX - cannon.x;
+          let y = ev.offsetY - cannon.y;
+          cannon.rotation = Math.atan2(y, x) * 180 / Math.PI + 90;
+
+
+          let bullet = new Bullet(cannon.type);
+          bullet.x = cannon.x;
+          bullet.y = cannon.y;
+          bullet.rotation = cannon.rotation;
+          bullets.push(bullet);
+
+
+        };
+
+        //鼠标点击 开炮
+        let bullets = [];
+        let last_fire = 0;
+        let firing = false;
+        oC.onclick = function (ev) {
+          //限制开炮频率300ms一发
+          let now = Date.now();
+          if (now - last_fire < 300) return;
+          last_fire = now;
+          firing = true;
+
+          let bullet = new Bullet(cannon.type);
+
+          bullet.x = cannon.x;
+          bullet.y = cannon.y;
+          bullet.rotation = cannon.rotation;
+          bullets.push(bullet);
+        };
+
+        //炮按钮切换
+        let btnMinus = new Button(__g_resource['bottom'].cannon_minus, __g_resource['bottom'].cannon_minus_down);
+        let btnPlus = new Button(__g_resource['bottom'].cannon_plus, __g_resource['bottom'].cannon_plus_down);
+
+        //切换大炮 按钮
+        btnMinus.x = 442 - 50;
+        btnMinus.y = 580;
+
+        btnPlus.x = 442 + 50;
+        btnPlus.y = 580;
+
+        //鱼群
+        let fishs = [];
+        setInterval(() => {
+          if (Math.random() < 0.1) {
+            let fish = new Fish(rndInt(1, 10));
+
+            //<0.5 从左边出 否则从右边出
+            if (Math.random() < 0.5) {
+              fish.x = -100;
+              fish.y = rndInt(0, H);
+              fish.rotation = rnd(70, 110);
+            } else {
+              fish.x = W + 100;
+              fish.y = rndInt(0, H);
+              fish.rotation = rnd(-110, -70);
+              fish.scaleY = -1;//处理倒影 右边的鱼
+            }
+            fishs.push(fish);
+          }
+        }, 50);
+
+
+        //按下鼠标判断 是否点击区域为切换按钮
+        oC.onmousedown = function (ev) {
+          let minus = false;
+          let plus = false;
+
+          if (btnMinus.checkDown(ev.offsetX, ev.offsetY)) {
+            minus = true;
+          }
+          if (btnPlus.checkDown(ev.offsetX, ev.offsetY)) {
+            plus = true;
+          }
+
+          //换炮
+          if (minus && cannon.type > 1) {
+            cannon.setType(cannon.type - 1);
+          }
+          if (plus && cannon.type < 7) {
+            cannon.setType(cannon.type + 1);
+          }
+        };
+        //抬起鼠标 切换按钮背景
+        oC.onmouseup = function (ev) {
+          btnMinus.checkUp(ev.offsetX, ev.offsetY);
+          btnPlus.checkUp(ev.offsetX, ev.offsetY);
+        };
+
+
+        //金币
+        let coins = [];
+
+
+        requestAnimationFrame(next);
+
+        function next() {
+
+          //1.清除
+          gd.clearRect(0, 0, oC.width, oC.height);
+
+          //2.移动 鱼速度、炮弹
+          if (firing) {
+            if (cannon.nextFrame()) {
+              firing = false;
+            }
+          }
+          fishs.forEach(fish => fish.move());
+          bullets.forEach(bullet => bullet.move());
+          // coins.forEach(coin => coin.nextFrame());
+
+
+          bullets = bullets.filter(bullet => !bullet.outOfCanvas(W, H));
+          fishs = fishs.filter(fish => !fish.outOfCanvas(W, H));
+
+          //3.检测碰撞 collTest
+          fishs.forEach((fish, fishIndex) => {
+            bullets.forEach((bullet, bulletIndex) => {
+              //如果碰撞
+              if (fish.collTest(bullet)) {
+                //消失
+                fishs.splice(fishIndex, 1);
+                bullets.splice(bulletIndex, 1);
+
+                //币
+                let coin = new Coin(2);
+                coin.x = fish.x;
+                coin.y = fish.y;
+                coins.push(coin)
+              }
+            });
+          });
+
+          //4.绘制
+
+          //底座
+          bottom_bar.draw(gd);
+
+          //大炮
+          cannon.draw(gd);
+
+          //切换大炮按钮
+          btnMinus.draw(gd);
+          btnPlus.draw(gd);
+
+          //炮弹
+          bullets.forEach(bullet => bullet.draw(gd));
+          coins.forEach(coin => {
+            coin.nextFrame();
+            coin.draw(gd);
+            coin.move(coinCollector.x, coinCollector.y);
+
+          });
+          fishs.forEach(fish => {
+            fish.draw(gd);
+            fish.nextFrame();//鱼游动
+          });
+          requestAnimationFrame(next);
+        }
+
+      }
+    </script>
+</head>
+<body>
+    <div class="cb">
+        <h1 id="text3d">丹丹专属无敌捕鱼游戏</h1>
+        <canvas id="c1" width="800" height="600"></canvas>
+    </div>
+</body>
+</html>
+
